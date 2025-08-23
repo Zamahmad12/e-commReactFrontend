@@ -5,7 +5,7 @@ const ProductList = () => {
   const GetProducts = async () => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch("http://localhost:5000/products", {
+    let result = await fetch (`${process.env.REACT_APP_API_URL}/products`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -21,7 +21,7 @@ const ProductList = () => {
   const handleDelete = async (id) => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch(`http://localhost:5000/product/${id}`, {
+    let result = await fetch(`${process.env.REACT_APP_API_URL}/product/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +42,7 @@ const ProductList = () => {
     console.log(event.target.value);
     let key = event.target.value;
     if (key) {
-      let result = await fetch(`http://localhost:5000/search/${key}`, {
+      let result = await fetch(`${process.env.REACT_APP_API_URL}/search/${key}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

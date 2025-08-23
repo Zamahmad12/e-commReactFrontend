@@ -11,7 +11,9 @@ const Login = () => {
         }
     }, []);
     const handlelogin = async () => {
-        let result = await fetch("http://localhost:5000/login", {
+                console.log("API URL:", process.env.REACT_APP_API_URL);
+
+        let result = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -19,6 +21,7 @@ const Login = () => {
             body: JSON.stringify({ email, password }),
         });
         result = await result.json();
+
         console.log("Login Response:", result);
         if (result.token) {
             localStorage.setItem("user", JSON.stringify(result.user));

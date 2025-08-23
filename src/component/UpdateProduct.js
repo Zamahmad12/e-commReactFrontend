@@ -14,7 +14,7 @@ const UpdateProduct = () => {
   const getproductDeatails = async () => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch(`http://localhost:5000/product/${params.id}`, {
+    let result = await fetch (`${process.env.REACT_APP_API_URL}/product/${params.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const UpdateProduct = () => {
   const editProduct = async () => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch(`http://localhost:5000/product/${params.id}`, {
+    let result = await fetch (`${process.env.REACT_APP_API_URL}/product/${params.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
