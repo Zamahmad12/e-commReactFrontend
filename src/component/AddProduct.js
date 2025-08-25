@@ -1,5 +1,7 @@
 import React, { use } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../apiconfig";
+
 
 const AddProduct = () => {
     const [productName, setProductName] = React.useState("");
@@ -7,6 +9,7 @@ const AddProduct = () => {
     const [productCategory, setProductCategory] = React.useState("");
     const [productCompany, setProductCompany] = React.useState("");
     const [error,seterror] = React.useState(false);
+    
     const Navigate = useNavigate();
 const AddProduct = async () => {
     let token = localStorage.getItem("token");
@@ -18,7 +21,7 @@ const AddProduct = async () => {
     console.log(productName, productPrice, productCategory, productCompany);
     const userId= JSON.parse(localStorage.getItem("user"))._id;
     console.log("User ID:", userId);
-    let result = await fetch("http://localhost:5000/add-product", {
+   let result = await fetch(`${API_URL}/add-product`, {
         method: "post",
         headers: {
             "Content-Type": "application/json",

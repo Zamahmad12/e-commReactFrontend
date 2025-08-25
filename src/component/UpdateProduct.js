@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import API_URL from "../apiconfig";
+
 const UpdateProduct = () => {
   const [productName, setProductName] = React.useState("");
   const [productPrice, setProductPrice] = React.useState("");
@@ -14,7 +16,7 @@ const UpdateProduct = () => {
   const getproductDeatails = async () => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch (`${process.env.REACT_APP_API_URL}/product/${params.id}`, {
+    let result = await fetch (`${API_URL}/product/${params.id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +33,7 @@ const UpdateProduct = () => {
   const editProduct = async () => {
     let token = localStorage.getItem("token");
     token = token.replace(/^"|"$/g, "");
-    let result = await fetch (`${process.env.REACT_APP_API_URL}/product/${params.id}`, {
+    let result = await fetch (`${API_URL}/product/${params.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

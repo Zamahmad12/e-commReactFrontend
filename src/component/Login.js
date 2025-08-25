@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../apiconfig";
+
 const Login = () => {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
@@ -11,9 +13,9 @@ const Login = () => {
         }
     }, []);
     const handlelogin = async () => {
-                console.log("API URL:", process.env.REACT_APP_API_URL);
+                console.log("API URL:", API_URL);
 
-        let result = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+        let result = await fetch(`${API_URL}/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
