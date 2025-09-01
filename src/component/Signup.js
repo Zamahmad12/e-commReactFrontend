@@ -7,30 +7,64 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [profilePic, setProfilePic] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const auth = localStorage.getItem("user");
     if (auth) {
       navigate("/");
     }
   }, [navigate]);
-   const handleFileChange = (e) => {
+
+  const handleFileChange = (e) => {
     setProfilePic(e.target.files[0]);
   };
-const handleSignup = async () => {
+
+  const handleSignup = async () => {
     try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("email", email);
-      formData.append("password", password);
+      let profilePicUrl = "";
 
       if (profilePic) {
-        formData.append("profilePic", profilePic);
+        // 1️⃣ Get Cloudinary signature from backend
+        const sigRes = await fetch(
+          `${process.env.REACT_APP_API_URL}/cloudinary/get-signature`
+        );
+        const sigData = await sigRes.json();
+
+        // 2️⃣ Upload image directly to Cloudinary
+        const formData = new FormData();
+        formData.append("file", profilePic);
+        formData.append("api_key", sigData.apiKey);
+        formData.append("timestamp", sigData.timestamp);
+        formData.append("signature", sigData.signature);
+        formData.append("folder", sigData.folder);
+
+        const cloudRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const cloudData = await cloudRes.json();
+        profilePicUrl = cloudData.secure_url;
+        console.log("✅ Uploaded to Cloudinary:", profilePicUrl);
       }
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-        method: "POST",
-        body: formData, 
-      });
+      // 3️⃣ Send final signup data to backend
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            profilePic: profilePicUrl, // 👈 store Cloudinary URL
+          }),
+        }
+      );
 
       const data = await response.json();
       console.log("Signup Response:", data);
@@ -46,9 +80,10 @@ const handleSignup = async () => {
       console.error("Signup failed:", error);
       alert("Something went wrong");
     }
-  };    
+  };
+
   return (
-    <div className="signup-container" style={{ height: "380px" }}>
+    <div className="signup-container" style={{ height: "420px" }}>
       <h1 className="signup-header">Signup Page</h1>
       <input
         className="input-box"
@@ -83,4 +118,5 @@ const handleSignup = async () => {
     </div>
   );
 };
+
 export default Signup;
