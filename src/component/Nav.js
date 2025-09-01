@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 const Nav = () => {
-  const auth = localStorage.getItem("user");
+  const auth = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
   const logout = () => {
     localStorage.removeItem("user");
