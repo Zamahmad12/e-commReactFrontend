@@ -1,6 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 const Nav = () => {
-  const auth = JSON.parse(localStorage.getItem("user"));
+    const storedUser = localStorage.getItem("user");
+  let auth = null;
+  try {
+    auth = storedUser ? JSON.parse(storedUser) : null;
+  } catch (e) {
+    console.error("Invalid user data in localStorage:", e);
+    auth = null;
+  }
   const navigate = useNavigate();
   const logout = () => {
     localStorage.removeItem("user");
@@ -23,7 +30,7 @@ const Nav = () => {
           </li>
           <li>
             <Link onClick={logout} to="/signup ">
-              Logout({JSON.parse(auth).name})
+              Logout({auth.name})
             </Link>
           </li>
         </ul>
