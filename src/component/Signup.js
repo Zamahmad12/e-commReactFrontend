@@ -25,7 +25,7 @@ const Signup = () => {
 
       if (profilePic) {
         // 1️⃣ Get Cloudinary signature from backend
-        const sigRes = await fetch(
+        const sigRes = await
           fetch(`${process.env.REACT_APP_API_URL}/api/cloudinary/signature`)
         );
         const sigData = await sigRes.json();
