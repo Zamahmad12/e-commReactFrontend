@@ -24,16 +24,11 @@ const Signup = () => {
       let profilePicUrl = "";
 
       if (profilePic) {
-        // 1️⃣ Get Cloudinary signature from backend
-<<<<<<< HEAD
-        const sigRes = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/cloudinary/get-signature`
-=======
-        const sigRes = await
-          fetch(`${process.env.REACT_APP_API_URL}/api/cloudinary/signature`)
->>>>>>> d1458066c8885bf0789487899d85e857ec672e03
-        );
-        const sigData = await sigRes.json();
+// 1️⃣ Get Cloudinary signature from backend
+const sigRes = await fetch(
+  `${process.env.REACT_APP_API_URL}/api/cloudinary/get-signature`
+);
+const sigData = await sigRes.json();
 
         // 2️⃣ Upload image directly to Cloudinary
         const formData = new FormData();
