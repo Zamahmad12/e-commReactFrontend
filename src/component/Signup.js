@@ -36,7 +36,7 @@ const handleSignup = async () => {
       console.log("Signup Response:", data);
 
       if (data.token) {
-        localStorage.setItem("user", JSON.stringify(data.result));
+        localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("token", data.token);
         navigate("/");
       } else {
