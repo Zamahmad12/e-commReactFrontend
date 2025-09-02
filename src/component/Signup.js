@@ -37,6 +37,7 @@ const Signup = () => {
         formData.append("timestamp", sigData.timestamp);
         formData.append("signature", sigData.signature);
         formData.append("folder", sigData.folder);
+        formData.append("resource_type", sigData.resource_type);
 
         const cloudRes = await fetch(
           `https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`,
