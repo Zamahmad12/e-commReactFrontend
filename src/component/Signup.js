@@ -10,9 +10,7 @@ const Signup = () => {
 
   useEffect(() => {
     const auth = localStorage.getItem("user");
-    if (auth) {
-      navigate("/");
-    }
+    if (auth) navigate("/");
   }, [navigate]);
 
   const handleFileChange = (e) => {
@@ -24,11 +22,13 @@ const Signup = () => {
       let profilePicUrl = "";
 
       if (profilePic) {
-// 1️⃣ Get Cloudinary signature from backend
-const sigRes = await fetch(
-  `${process.env.REACT_APP_API_URL}/api/cloudinary/get-signature`
-);
-const sigData = await sigRes.json();
+        // 1️⃣ Get Cloudinary signature from backend
+        const sigRes = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/cloudinary/get-signature`
+        );
+        if (!sigRes.ok) throw new Error("Failed to get Cloudinary signature");
+        const sigData = await sigRes.json();
+        console.log("Signature Data:", sigData);
 
         // 2️⃣ Upload image directly to Cloudinary
         const formData = new FormData();
@@ -40,32 +40,33 @@ const sigData = await sigRes.json();
 
         const cloudRes = await fetch(
           `https://api.cloudinary.com/v1_1/${sigData.cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: formData,
-          }
+          { method: "POST", body: formData }
         );
+
+        if (!cloudRes.ok) {
+          const errorText = await cloudRes.text(); // read Cloudinary error
+          console.error("Cloudinary upload error:", errorText);
+          throw new Error("Cloudinary upload failed");
+        }
 
         const cloudData = await cloudRes.json();
         profilePicUrl = cloudData.secure_url;
         console.log("✅ Uploaded to Cloudinary:", profilePicUrl);
       }
 
-      // 3️⃣ Send final signup data to backend
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            password,
-            profilePic: profilePicUrl, // 👈 store Cloudinary URL
-          }),
-        }
-      );
+      // 3️⃣ Send signup data to backend
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          profilePic: profilePicUrl, // store Cloudinary URL
+        }),
+      });
 
+      if (!response.ok) throw new Error("Signup request failed");
       const data = await response.json();
       console.log("Signup Response:", data);
 
@@ -74,11 +75,11 @@ const sigData = await sigRes.json();
         localStorage.setItem("token", data.token);
         navigate("/");
       } else {
-        alert("Signup failed");
+        alert("Signup failed: " + (data.error || "Unknown error"));
       }
     } catch (error) {
       console.error("Signup failed:", error);
-      alert("Something went wrong");
+      alert("Signup failed: " + error.message);
     }
   };
 
